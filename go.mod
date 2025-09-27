@@ -1,4 +1,4 @@
-module github.com/GoogleCloudPlatform/kubectl-ai
+module github.com/stepinto/mishan
 
 go 1.24.0
 
