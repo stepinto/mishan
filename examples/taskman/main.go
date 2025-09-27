@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -11,14 +12,15 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/stepinto/mishan"
 )
 
 type Task struct {
-	ID          int       `json:"id"`
-	Description string    `json:"description"`  
-	Priority    string    `json:"priority"`
-	Completed   bool      `json:"completed"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int        `json:"id"`
+	Description string     `json:"description"`
+	Priority    string     `json:"priority"`
+	Completed   bool       `json:"completed"`
+	CreatedAt   time.Time  `json:"created_at"`
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
 }
 
@@ -42,7 +44,7 @@ var rootCmd = &cobra.Command{
 
 Store tasks locally with priorities, mark them complete, and keep
 track of your productivity over time.`,
-	PersistentPreRun: loadTasks,
+	PersistentPreRun:  loadTasks,
 	PersistentPostRun: saveTasks,
 }
 
@@ -69,23 +71,38 @@ var completeCmd = &cobra.Command{
 }
 
 var deleteCmd = &cobra.Command{
-	Use:   "delete [task-id]", 
+	Use:   "delete [task-id]",
 	Short: "Delete a task",
 	Args:  cobra.ExactArgs(1),
 	Run:   deleteTask,
 }
 
+var aiCmd = &cobra.Command{
+	Use:   "ai",
+	Short: "AI-agent for taskman",
+	Run: func(cmd *cobra.Command, args []string) {
+		options := &mishan.Options{
+			Prompt:        mishan.CobraPrompt(rootCmd),
+			Tools:         []mishan.Tool{mishan.NewCobraTool(rootCmd)},
+			ProviderID:    "openai",
+			ModelID:       "qwen-plus",
+			UIType:        "terminal",
+			MaxIterations: 20,
+		}
+		mishan.Run(context.Background(), options, args)
+	},
+}
+
 func init() {
 	// Persistent flags available to all commands
 	rootCmd.PersistentFlags().StringVar(&taskFile, "file", "", "task file (default is $HOME/.taskman.json)")
-	
-	// Local flags for specific commands  
+
+	// Local flags for specific commands
 	addCmd.Flags().StringVarP(&priority, "priority", "p", "medium", "task priority (high, medium, low)")
 	listCmd.Flags().BoolVarP(&showAll, "all", "a", false, "show completed tasks too")
-	
+
 	// Add subcommands
-	rootCmd.AddCommand(addCmd, listCmd, completeCmd, deleteCmd)
-	
+	rootCmd.AddCommand(addCmd, listCmd, completeCmd, deleteCmd, aiCmd)
 	// Setup configuration
 	setupConfig()
 }
@@ -96,7 +113,7 @@ func setupConfig() {
 	viper.AddConfigPath("$HOME")
 	viper.SetDefault("priority", "medium")
 	viper.SetDefault("file", filepath.Join(os.Getenv("HOME"), ".taskman.json"))
-	
+
 	viper.ReadInConfig()
 }
 
@@ -114,7 +131,7 @@ func loadTasks(cmd *cobra.Command, args []string) {
 		NextID:   1,
 		FilePath: file,
 	}
-	
+
 	if data, err := os.ReadFile(file); err == nil {
 		json.Unmarshal(data, taskManager)
 	}
@@ -123,23 +140,23 @@ func loadTasks(cmd *cobra.Command, args []string) {
 func saveTasks(cmd *cobra.Command, args []string) {
 	data, err := json.MarshalIndent(taskManager, "", "  ")
 	if err != nil {
-		fmt.Printf("Error saving tasks: %v\n", err)
+		cmd.Printf("Error saving tasks: %v\n", err)
 		return
 	}
-	
+
 	os.WriteFile(taskManager.FilePath, data, 0644)
 }
 
 func addTask(cmd *cobra.Command, args []string) {
 	description := strings.Join(args, " ")
-	
+
 	// Validate priority
 	validPriorities := map[string]bool{"high": true, "medium": true, "low": true}
 	if !validPriorities[priority] {
-		fmt.Printf("Invalid priority '%s'. Use: high, medium, or low\n", priority)
+		cmd.Printf("Invalid priority '%s'. Use: high, medium, or low\n", priority)
 		os.Exit(1)
 	}
-	
+
 	task := Task{
 		ID:          taskManager.NextID,
 		Description: description,
@@ -147,35 +164,35 @@ func addTask(cmd *cobra.Command, args []string) {
 		Completed:   false,
 		CreatedAt:   time.Now(),
 	}
-	
+
 	taskManager.Tasks = append(taskManager.Tasks, task)
 	taskManager.NextID++
-	
-	fmt.Printf("Added task #%d: %s [%s]\n", task.ID, task.Description, task.Priority)
+
+	cmd.Printf("Added task #%d: %s [%s]\n", task.ID, task.Description, task.Priority)
 }
 
 func listTasks(cmd *cobra.Command, args []string) {
 	if len(taskManager.Tasks) == 0 {
-		fmt.Println("No tasks found.")
+		cmd.Println("No tasks found.")
 		return
 	}
-	
-	fmt.Printf("%-4s %-10s %-50s %-10s %s\n", "ID", "STATUS", "DESCRIPTION", "PRIORITY", "CREATED")
-	fmt.Println(strings.Repeat("-", 90))
-	
+
+	cmd.Printf("%-4s %-10s %-50s %-10s %s\n", "ID", "STATUS", "DESCRIPTION", "PRIORITY", "CREATED")
+	cmd.Println(strings.Repeat("-", 90))
+
 	for _, task := range taskManager.Tasks {
 		if !showAll && task.Completed {
 			continue
 		}
-		
+
 		status := "PENDING"
 		if task.Completed {
 			status = "DONE"
 		}
-		
-		fmt.Printf("%-4d %-10s %-50s %-10s %s\n", 
-			task.ID, 
-			status, 
+
+		cmd.Printf("%-4d %-10s %-50s %-10s %s\n",
+			task.ID,
+			status,
 			truncate(task.Description, 50),
 			strings.ToUpper(task.Priority),
 			task.CreatedAt.Format("2006-01-02"))
@@ -185,47 +202,47 @@ func listTasks(cmd *cobra.Command, args []string) {
 func completeTask(cmd *cobra.Command, args []string) {
 	id, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("Invalid task ID: %s\n", args[0])
+		cmd.Printf("Invalid task ID: %s\n", args[0])
 		os.Exit(1)
 	}
-	
+
 	for i := range taskManager.Tasks {
 		if taskManager.Tasks[i].ID == id {
 			if taskManager.Tasks[i].Completed {
-				fmt.Printf("Task #%d is already completed\n", id)
+				cmd.Printf("Task #%d is already completed\n", id)
 				return
 			}
-			
+
 			now := time.Now()
 			taskManager.Tasks[i].Completed = true
 			taskManager.Tasks[i].CompletedAt = &now
-			
-			fmt.Printf("Completed task #%d: %s\n", id, taskManager.Tasks[i].Description)
+
+			cmd.Printf("Completed task #%d: %s\n", id, taskManager.Tasks[i].Description)
 			return
 		}
 	}
-	
-	fmt.Printf("Task #%d not found\n", id)
+
+	cmd.Printf("Task #%d not found\n", id)
 	os.Exit(1)
 }
 
 func deleteTask(cmd *cobra.Command, args []string) {
 	id, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("Invalid task ID: %s\n", args[0])
+		cmd.Printf("Invalid task ID: %s\n", args[0])
 		os.Exit(1)
 	}
-	
+
 	for i, task := range taskManager.Tasks {
 		if task.ID == id {
 			// Remove task from slice
 			taskManager.Tasks = append(taskManager.Tasks[:i], taskManager.Tasks[i+1:]...)
-			fmt.Printf("Deleted task #%d: %s\n", id, task.Description)
+			cmd.Printf("Deleted task #%d: %s\n", id, task.Description)
 			return
 		}
 	}
-	
-	fmt.Printf("Task #%d not found\n", id)
+
+	cmd.Printf("Task #%d not found\n", id)
 	os.Exit(1)
 }
 
@@ -242,4 +259,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
