@@ -27,12 +27,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/gollm"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/journal"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/mcp"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/sessions"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/tools"
+	"github.com/stepinto/mishan/gollm"
+	"github.com/stepinto/mishan/pkg/api"
+	"github.com/stepinto/mishan/pkg/journal"
+	"github.com/stepinto/mishan/pkg/mcp"
+	"github.com/stepinto/mishan/pkg/sessions"
+	"github.com/stepinto/mishan/pkg/tools"
 	"github.com/google/uuid"
 	"k8s.io/klog/v2"
 )

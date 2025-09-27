@@ -26,7 +26,7 @@ import (
 	"github.com/openai/openai-go/option"
 	"k8s.io/klog/v2"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/api"
 )
 
 // Package-level env var storage (OpenAI env)

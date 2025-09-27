@@ -20,7 +20,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/gollm"
+	"github.com/stepinto/mishan/gollm"
 )
 
 func init() {

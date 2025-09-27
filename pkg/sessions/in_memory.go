@@ -17,7 +17,7 @@ package sessions
 import (
 	"sync"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/api"
 )
 
 // InMemoryChatStore is an in-memory implementation of the api.ChatMessageStore interface.

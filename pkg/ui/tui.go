@@ -23,8 +23,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/agent"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/agent"
+	"github.com/stepinto/mishan/pkg/api"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textarea"

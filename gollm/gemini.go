@@ -29,7 +29,7 @@ import (
 
 	"google.golang.org/genai"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/api"
 
 	"k8s.io/klog/v2"
 )
@@ -463,7 +463,7 @@ func (c *GeminiChat) SendStreaming(ctx context.Context, contents ...any) (ChatRe
 			content := geminiResponse.Candidates[0].Content
 			if content == nil || content.Parts == nil || len(content.Parts) == 0 {
 				// This happens when there is empty content with the finish reason (STOP) to indicate that streaming response is finished.
-				// xref: https://github.com/GoogleCloudPlatform/kubectl-ai/issues/306
+				// xref: https://github.com/stepinto/mishan/issues/306
 				log.V(1).Info("empty response probably with STOP finishedReason")
 				return
 			}

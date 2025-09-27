@@ -28,7 +28,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/api"
 
 	"k8s.io/klog/v2"
 )

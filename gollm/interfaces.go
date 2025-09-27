@@ -21,7 +21,7 @@ import (
 	"io"
 	"iter"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/api"
 )
 
 // Client is a client for a language model.

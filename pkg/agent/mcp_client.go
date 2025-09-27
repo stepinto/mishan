@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/mcp"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/tools"
+	"github.com/stepinto/mishan/pkg/api"
+	"github.com/stepinto/mishan/pkg/mcp"
+	"github.com/stepinto/mishan/pkg/tools"
 	"k8s.io/klog/v2"
 )
 

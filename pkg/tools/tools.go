@@ -26,7 +26,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/journal"
+	"github.com/stepinto/mishan/pkg/journal"
 	"github.com/google/uuid"
 	"sigs.k8s.io/yaml"
 )

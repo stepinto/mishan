@@ -1,4 +1,4 @@
-module github.com/GoogleCloudPlatform/kubectl-ai/gollm
+module github.com/stepinto/mishan/gollm
 
 go 1.24.0
 

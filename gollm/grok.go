@@ -25,7 +25,7 @@ import (
 	"github.com/openai/openai-go/option"
 	"k8s.io/klog/v2"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	"github.com/stepinto/mishan/pkg/api"
 )
 
 // Register the Grok provider factory on package initialization.

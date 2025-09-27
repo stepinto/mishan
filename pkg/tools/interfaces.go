@@ -17,7 +17,7 @@ package tools
 import (
 	"context"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/gollm"
+	"github.com/stepinto/mishan/gollm"
 )
 
 type Tool interface {

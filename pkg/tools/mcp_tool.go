@@ -19,8 +19,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/gollm"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/mcp"
+	"github.com/stepinto/mishan/gollm"
+	"github.com/stepinto/mishan/pkg/mcp"
 	"k8s.io/klog/v2"
 )
 

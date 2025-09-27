@@ -23,7 +23,7 @@ import (
 	"github.com/ollama/ollama/envconfig"
 	"k8s.io/klog/v2"
 
-	kctlApi "github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
+	kctlApi "github.com/stepinto/mishan/pkg/api"
 )
 
 func init() {

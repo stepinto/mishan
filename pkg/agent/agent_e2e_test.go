@@ -19,11 +19,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/GoogleCloudPlatform/kubectl-ai/gollm"
-	"github.com/GoogleCloudPlatform/kubectl-ai/internal/mocks"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/api"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/sessions"
-	"github.com/GoogleCloudPlatform/kubectl-ai/pkg/tools"
+	"github.com/stepinto/mishan/gollm"
+	"github.com/stepinto/mishan/internal/mocks"
+	"github.com/stepinto/mishan/pkg/api"
+	"github.com/stepinto/mishan/pkg/sessions"
+	"github.com/stepinto/mishan/pkg/tools"
 	"go.uber.org/mock/gomock"
 )
 
